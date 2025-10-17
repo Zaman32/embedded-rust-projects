@@ -207,10 +207,22 @@ extern "C" fn Default_Handler() {
     }
 }
 // 2. Define the Reset Handler
-
+unsafe extern "C" {
+    static _sidata: u32; /* Start of .data in flash*/
+    static _sdata: u32; /* Start of .data in RAM*/
+    static _edata: u32; /* End of .data in RAM*/
+    static _sbss: u32; /* Start of .bss in RAM*/
+    static _ebss: u32; /* End of .bss in RAM*/
+}
 #[unsafe(no_mangle)]
 extern "C" fn Reset_Handler() {
     //1. Copy the .data section from FLASH to RAM
+
+    unsafe {
+        #[allow(unused_variables)]
+        let src_is_flash = &_sidata as *const u32;
+    }
+
     //2. Zero out the .bss section in the RAM
     //3. Call main()
 
