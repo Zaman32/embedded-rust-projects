@@ -1,0 +1,8 @@
+pub const GPIO_BASE_ADDR: u32 = 0x4800_0000;
+pub const GPIOA_BASE_ADDR: u32 = GPIO_BASE_ADDR;
+pub const GPIOB_BASE_ADDR: u32 = 0x4800_0000 + 0x0400;
+pub const GPIOE_BASE_ADDR: u32 = 0x4800_0000 + 0x1000;
+pub const RCC_BASE_ADDR: u32 = 0x4002_1000;
+
+
+pub const GPIOA_PIN_0: u32 = 0;
