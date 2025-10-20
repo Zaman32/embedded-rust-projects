@@ -1,5 +1,7 @@
 // 1. Define the vector table for the MCU
 
+use core::ptr::{addr_of, addr_of_mut};
+
 unsafe extern "C" {
     fn BusFault_Handler();
     fn MemManage_Handler();
@@ -207,23 +209,40 @@ extern "C" fn Default_Handler() {
     }
 }
 // 2. Define the Reset Handler
+
 unsafe extern "C" {
-    static _sidata: u32; /* Start of .data in flash*/
-    static _sdata: u32; /* Start of .data in RAM*/
-    static _edata: u32; /* End of .data in RAM*/
-    static _sbss: u32; /* Start of .bss in RAM*/
-    static _ebss: u32; /* End of .bss in RAM*/
+    static mut _sidata: u32;
+    static mut _sdata: u32;
+    static mut _edata: u32;
+    static mut _sbss: u32;
+    static mut _ebss: u32;
 }
+
 #[unsafe(no_mangle)]
 extern "C" fn Reset_Handler() {
-    //1. Copy the .data section from FLASH to RAM
+    let mut addr_of_flash = addr_of!(_sidata);
+    let mut addr_of_ram = addr_of_mut!(_sdata);
+    let end_addr_of_ram = addr_of_mut!(_edata);
+    let mut addr_of_bss = addr_of_mut!(_sbss);
+    let end_addr_of_bss = addr_of_mut!(_ebss);
 
-    unsafe {
-        #[allow(unused_variables)]
-        let src_is_flash = &_sidata as *const u32;
+    //1. Copy the .data section from FLASH to RAM
+    while addr_of_ram < end_addr_of_ram {
+        unsafe {
+            *addr_of_ram = *addr_of_flash;
+            addr_of_ram = addr_of_ram.add(1);
+            addr_of_flash = addr_of_flash.add(1);
+        }
     }
 
     //2. Zero out the .bss section in the RAM
+    while addr_of_bss < end_addr_of_bss {
+        unsafe {
+            *addr_of_bss = 0;
+            addr_of_bss = addr_of_bss.add(1);
+        }
+    }
+
     //3. Call main()
 
     crate::main();
