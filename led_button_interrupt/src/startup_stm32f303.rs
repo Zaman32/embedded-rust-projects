@@ -191,22 +191,16 @@ static VECTOR_TABLE: [Option<unsafe extern "C" fn()>; 100] = [
 
 #[unsafe(no_mangle)]
 extern "C" fn NMI_Handler() {
-    loop {
-
-    }
+    loop {}
 }
 
 #[unsafe(no_mangle)]
 extern "C" fn HardFault_Handler() {
-    loop {
-
-    }
+    loop {}
 }
 #[unsafe(no_mangle)]
 extern "C" fn Default_Handler() {
-    loop {
-
-    }
+    loop {}
 }
 // 2. Define the Reset Handler
 
